@@ -79,18 +79,16 @@ resource "null_resource" "grant_artemarca_user_privileges" {
     digitalocean_database_user.cluster_user_artemarca
   ]
 
-  # INSTALL POSTGRESQL CLIENT FOR THIS TO WORK!!!
-  # sudo apt-get install postgresql-client -y
   provisioner "local-exec" {
-    command = <<EOT
-      PGPASSWORD=${digitalocean_database_cluster.cluster_postgres_digital_roots_lab.password} psql \
+    command = <<-EOT
+      PGPASSWORD='${digitalocean_database_cluster.cluster_postgres_digital_roots_lab.password}' psql \
         -h ${digitalocean_database_cluster.cluster_postgres_digital_roots_lab.host} \
         -p ${digitalocean_database_cluster.cluster_postgres_digital_roots_lab.port} \
         -U doadmin \
         -d ${digitalocean_database_db.database_artemarca.name} \
         -c "GRANT ALL PRIVILEGES ON DATABASE ${digitalocean_database_db.database_artemarca.name} TO ${digitalocean_database_user.cluster_user_artemarca.name};
-	          GRANT ALL PRIVILEGES ON SCHEMA public TO ${digitalocean_database_user.cluster_user_artemarca.name};
-	          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ${digitalocean_database_user.cluster_user_artemarca.name};"
+        GRANT ALL PRIVILEGES ON SCHEMA public TO ${digitalocean_database_user.cluster_user_artemarca.name};
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ${digitalocean_database_user.cluster_user_artemarca.name};"
     EOT
   }
 }
