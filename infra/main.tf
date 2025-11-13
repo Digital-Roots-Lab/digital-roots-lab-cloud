@@ -20,11 +20,13 @@ resource "digitalocean_project" "project" {
   environment = "Production"
 }
 
+# Registry
 resource "digitalocean_container_registry" "registry" {
   name                   = "digital-roots-lab"
   subscription_tier_slug = "starter"
 }
 
+# Bucket
 resource "digitalocean_spaces_bucket" "artemarca_bucket" {
   name   = "artemarca-bucket"
   region = "nyc3"
@@ -47,4 +49,24 @@ resource "digitalocean_spaces_bucket_cors_configuration" "artemarca_bucket_cors"
     allowed_origins = ["https://artemarca.net"]
     max_age_seconds = 3000
   }
+}
+
+# Managed Database
+resource "digitalocean_database_cluster" "cluster_postgres_digital_roots_lab" {
+  name       = "digital-roots-lab-postgres"
+  engine     = "pg"
+  version    = "15"
+  size       = "db-s-1vcpu-1gb"
+  region     = "nyc1"
+  node_count = 1
+}
+
+resource "digitalocean_database_user" "cluster_user_artemarca" {
+  cluster_id = digitalocean_database_cluster.cluster_postgres_digital_roots_lab.id
+  name = "artemarca"
+}
+
+resource "digitalocean_database_db" "database_artemarca" {
+  cluster_id = digitalocean_database_cluster.cluster_postgres_digital_roots_lab.id
+  name       = "artemarca"
 }
