@@ -7,7 +7,7 @@ terraform {
   }
   backend "gcs" {
     bucket = "storage-terraform-states"
-    prefix = "artemarca-digital-roots-lab-cloud/terraform/state"
+    prefix = "digital-roots-lab-cloud-artemarca/terraform/state"
   }
 }
 
