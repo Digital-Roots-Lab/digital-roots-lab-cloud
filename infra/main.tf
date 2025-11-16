@@ -5,6 +5,10 @@ terraform {
       version = "~> 2.0"
     }
   }
+  backend "gcs" {
+    bucket = "storage-terraform-states"
+    prefix = "artemarca-digital-roots-lab-cloud/terraform/state"
+  }
 }
 
 provider "digitalocean" {
